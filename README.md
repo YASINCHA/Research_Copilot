@@ -1,6 +1,6 @@
 # 🧭 AI Research & Meeting Co-Pilot
 
-[![CI](https://github.com/YOUR_USERNAME/research-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/research-copilot/actions/workflows/ci.yml)
+[![CI](https://github.com/YASINCHA/Research_Copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/YASINCHA/Research_Copilot/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
