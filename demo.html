@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Research Co-Pilot - Live Demo</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+  input { width: 100%; padding: 8px; margin: 6px 0; box-sizing: border-box; }
+  button { padding: 8px 16px; margin-top: 8px; cursor: pointer; }
+  #log { margin-top: 20px; }
+  .step { padding: 10px; margin: 8px 0; border-left: 3px solid #888; background: #f7f7f7; }
+  .step.scope_agent { border-color: #3b82f6; }
+  .step.researcher { border-color: #10b981; }
+  .step.writer { border-color: #f59e0b; }
+  .step.critic { border-color: #ef4444; }
+  .step.finish { border-color: #8b5cf6; font-weight: bold; }
+  pre { white-space: pre-wrap; font-size: 13px; }
+</style>
+</head>
+<body>
+  <h1>🧭 Research Co-Pilot — Live Agent Stream</h1>
+  <p>Demonstrates the SSE endpoint: watch each agent report progress in real time instead of waiting on a single spinner.</p>
+
+  <input id="topic" placeholder="Topic (e.g. Stripe)" value="Stripe">
+  <input id="purpose" placeholder="Purpose (e.g. interview prep)" value="interview prep">
+  <button onclick="run()">Generate brief</button>
+
+  <div id="log"></div>
+
+<script>
+async function run() {
+  const log = document.getElementById('log');
+  log.innerHTML = '';
+  const topic = document.getElementById('topic').value;
+  const purpose = document.getElementById('purpose').value;
+
+  const response = await fetch('http://localhost:8000/brief', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, purpose })
+  });
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop();
+
+    for (const part of parts) {
+      if (!part.startsWith('data: ')) continue;
+      const payload = JSON.parse(part.slice(6));
+      const div = document.createElement('div');
+      div.className = 'step ' + payload.node;
+      div.innerHTML = `<strong>${payload.node}</strong><pre>${JSON.stringify(payload, null, 2)}</pre>`;
+      log.appendChild(div);
+    }
+  }
+}
+</script>
+</body>
+</html>
