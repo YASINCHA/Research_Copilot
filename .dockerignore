@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+venv/
+.venv/
+.git/
+.pytest_cache/
+.deepeval-cache.json
+.deepeval_telemetry.txt
+demo.html
+README.md
