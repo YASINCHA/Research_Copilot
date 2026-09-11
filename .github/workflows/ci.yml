@@ -24,7 +24,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run automated evals
-        run: pytest tests/ -v
+        run: python -m pytest tests/ -v
 
   docker-build:
     runs-on: ubuntu-latest
